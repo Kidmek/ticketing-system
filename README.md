@@ -83,7 +83,6 @@ A web-based support ticketing system built with a **Node.js** backend and a **Re
 - **Ticket Categories**: Allow users to categorize tickets (e.g., Bug, Feature Request).
 - **Ticket Priority**: Add priority levels (Low, Medium, High) with color coding.
 - **Notifications**: Email or in-app notifications for ticket updates.
-- **Search & Filter**: Add search functionality and filters (e.g., by status, user) on the admin dashboard.
 - **User Profile**: Enable users to view and edit their profiles.
 - **Environment Variables**: Use `.env` files for configurable settings (e.g., port, JWT secret).
 
