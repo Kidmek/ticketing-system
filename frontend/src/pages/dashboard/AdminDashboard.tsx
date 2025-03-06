@@ -55,7 +55,7 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <PageWrapper header="Admin Dashboard">
-      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen">
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen mx-auto">
         <TicketFilters
           status={status}
           setStatus={setStatus}

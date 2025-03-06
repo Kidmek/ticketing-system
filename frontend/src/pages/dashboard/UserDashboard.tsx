@@ -97,7 +97,7 @@ const UserDashboard: React.FC = () => {
 
   return (
     <PageWrapper header="User Dashboard">
-      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen">
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen mx-auto">
         <form
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded-lg shadow-md mb-8"
