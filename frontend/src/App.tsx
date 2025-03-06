@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import UserDashboard from "./pages/UserDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import UserDashboard from "./pages/dashboard/UserDashboard";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const App: React.FC = () => {

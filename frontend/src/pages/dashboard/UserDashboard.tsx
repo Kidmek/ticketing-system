@@ -1,17 +1,26 @@
-import { useEffect, useState } from "react";
-import TicketList from "../components/organisms/TicketList";
-import FormField from "../components/molecules/FormField";
-import Button from "../components/atoms/Button";
-import LoadingSpinner from "../components/atoms/LoadingSpinner";
-import ErrorText from "../components/atoms/ErrorText";
-import axiosInstance from "../api/axiosInstance";
-import PageWrapper from "../components/organisms/PageWrapper";
+import { useCallback, useEffect, useState } from "react";
+import TicketList from "../../components/organisms/TicketList";
+import FormField from "../../components/molecules/FormField";
+import Button from "../../components/atoms/Button";
+import LoadingSpinner from "../../components/atoms/LoadingSpinner";
+import ErrorText from "../../components/atoms/ErrorText";
+import axiosInstance from "../../api/axiosInstance";
+import PageWrapper from "../../components/organisms/PageWrapper";
+import TicketFilters from "../../components/molecules/TicketFilters";
+import Pagination from "../../components/molecules/Pagination";
 
 interface Ticket {
   _id: string;
   title: string;
   description: string;
   status: "Open" | "In Progress" | "Closed";
+}
+
+interface TicketResponse {
+  tickets: Ticket[];
+  totalPages: number;
+  currentPage: number;
+  totalTickets: number;
 }
 
 const UserDashboard: React.FC = () => {
@@ -22,22 +31,30 @@ const UserDashboard: React.FC = () => {
   const [titleError, setTitleError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [formError, setFormError] = useState("");
+  const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    fetchTickets();
-  }, []);
-
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/api/tickets");
-      setTickets(response.data);
+      const response = await axiosInstance.get<TicketResponse>("/api/tickets", {
+        params: {
+          page: currentPage,
+          limit: 10,
+          status: status || undefined,
+          search: search || undefined,
+        },
+      });
+      setTickets(response.data.tickets);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error("Failed to fetch tickets", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, status, search]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +76,7 @@ const UserDashboard: React.FC = () => {
       await axiosInstance.post("/api/tickets", { title, description });
       setTitle("");
       setDescription("");
+      setCurrentPage(1);
       fetchTickets();
     } catch (error: any) {
       if (error.response) {
@@ -73,9 +91,13 @@ const UserDashboard: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchTickets();
+  }, [status, search, currentPage, fetchTickets]);
+
   return (
     <PageWrapper header="User Dashboard">
-      <div className="px-6 max-w-4xl flex-1 overflow-y-auto">
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen">
         <form
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded-lg shadow-md mb-8"
@@ -107,7 +129,24 @@ const UserDashboard: React.FC = () => {
           </Button>
           {formError && <ErrorText message={formError} />}
         </form>
-        {isLoading ? <LoadingSpinner /> : <TicketList tickets={tickets} />}
+        <TicketFilters
+          status={status}
+          setStatus={setStatus}
+          search={search}
+          setSearch={setSearch}
+        />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <TicketList tickets={tickets} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
       </div>
     </PageWrapper>
   );

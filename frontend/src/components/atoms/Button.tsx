@@ -1,25 +1,30 @@
+import React from "react";
+
 interface ButtonProps {
-  onClick?: () => void;
   children: React.ReactNode;
-  className?: string;
   type?: "button" | "submit" | "reset";
+  onClick?: () => void;
+  className?: string;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
-  onClick,
   children,
-  className = "",
   type = "button",
-}) => (
-  <button
-    type={type}
-    onClick={onClick}
-    className={`px-4 py-2 bg-blue-500 cursor-pointer
-      text-white rounded hover:bg-blue-600
-       transition-colors duration-200 ${className} `}
-  >
-    {children}
-  </button>
-);
+  onClick,
+  className = "",
+  disabled = false,
+}) => {
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`px-4 py-2 rounded-md text-white bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+    >
+      {children}
+    </button>
+  );
+};
 
 export default Button;
