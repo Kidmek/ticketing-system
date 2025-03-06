@@ -9,7 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/ticketing", {
+const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/ticketing";
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 } as any);
