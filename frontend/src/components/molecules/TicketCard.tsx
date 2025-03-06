@@ -11,7 +11,7 @@ interface TicketCardProps {
     status: string;
     user?: { username: string };
   };
-  fetchTickets: () => void;
+  fetchTickets?: () => void;
   isAdmin: boolean;
 }
 
@@ -26,7 +26,9 @@ const TicketCard: React.FC<TicketCardProps> = ({
     setIsLoading(true);
     try {
       await axiosInstance.put(`/api/tickets/${id}`, { status });
-      fetchTickets();
+      if (fetchTickets) {
+        fetchTickets();
+      }
     } catch (error) {
       console.error("Failed to update ticket", error);
     } finally {

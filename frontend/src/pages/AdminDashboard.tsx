@@ -33,6 +33,13 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
+    <div className="flex flex-col">
+      <div>top</div>
+      <div>title</div>
+      <div className="h-[200vh] overflow-y-auto">long list</div>
+    </div>
+  );
+  return (
     <div className="min-h-screen bg-gray-100">
       <NavigationBar />
       <div className="p-6 max-w-4xl mx-auto">

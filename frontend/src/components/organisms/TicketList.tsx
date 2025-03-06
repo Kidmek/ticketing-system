@@ -9,7 +9,7 @@ interface TicketListProps {
     user?: { username: string };
   }>;
   isAdmin?: boolean;
-  fetchTickets: () => void;
+  fetchTickets?: () => void;
 }
 
 const TicketList: React.FC<TicketListProps> = ({
