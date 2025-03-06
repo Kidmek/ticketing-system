@@ -87,7 +87,3 @@ A web-based support ticketing system built with a **Node.js** backend and a **Re
 - **User Profile**: Enable users to view and edit their profiles.
 - **Environment Variables**: Use `.env` files for configurable settings (e.g., port, JWT secret).
 
-## Notes
-
-- **Security**: Passwords are hashed with bcrypt, but the JWT secret (`'secret'`) should be moved to an environment variable in production.
-- **Port Change**: The backend runs on `9000` instead of the default `5000`. Ensure this matches in `axiosInstance.ts`.
