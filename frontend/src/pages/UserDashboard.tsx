@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import NavigationBar from "../components/organisms/NavigationBar";
 import TicketList from "../components/organisms/TicketList";
 import FormField from "../components/molecules/FormField";
 import Button from "../components/atoms/Button";
 import LoadingSpinner from "../components/atoms/LoadingSpinner";
 import ErrorText from "../components/atoms/ErrorText";
 import axiosInstance from "../api/axiosInstance";
+import PageWrapper from "../components/organisms/PageWrapper";
 
 interface Ticket {
   _id: string;
@@ -74,12 +74,8 @@ const UserDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <NavigationBar />
-      <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
-          User Dashboard
-        </h1>
+    <PageWrapper header="User Dashboard">
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto">
         <form
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded-lg shadow-md mb-8"
@@ -113,7 +109,7 @@ const UserDashboard: React.FC = () => {
         </form>
         {isLoading ? <LoadingSpinner /> : <TicketList tickets={tickets} />}
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 

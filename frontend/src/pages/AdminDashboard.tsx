@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import NavigationBar from "../components/organisms/NavigationBar";
 import TicketList from "../components/organisms/TicketList";
 import LoadingSpinner from "../components/atoms/LoadingSpinner";
 import axiosInstance from "../api/axiosInstance";
+import PageWrapper from "../components/organisms/PageWrapper";
 
 interface Ticket {
   _id: string;
@@ -31,14 +31,9 @@ const AdminDashboard: React.FC = () => {
       setIsLoading(false);
     }
   };
-
   return (
-    <div className="min-h-screen bg-gray-100">
-      <NavigationBar />
-      <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
-          Admin Dashboard
-        </h1>
+    <PageWrapper header="Admin Dashboard">
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto">
         {isLoading ? (
           <LoadingSpinner />
         ) : (
@@ -49,7 +44,7 @@ const AdminDashboard: React.FC = () => {
           />
         )}
       </div>
-    </div>
+    </PageWrapper>
   );
 };
 
