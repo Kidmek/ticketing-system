@@ -9,23 +9,27 @@ interface TicketListProps {
     user?: { username: string };
   }>;
   isAdmin?: boolean;
-  onUpdate?: (id: string, status: string) => void;
+  fetchTickets: () => void;
 }
 
 const TicketList: React.FC<TicketListProps> = ({
   tickets,
   isAdmin = false,
-  onUpdate,
+  fetchTickets,
 }) => (
   <div className="space-y-4">
-    {tickets.map((ticket) => (
-      <TicketCard
-        key={ticket._id}
-        ticket={{ ...ticket, id: ticket._id }}
-        isAdmin={isAdmin}
-        onUpdate={onUpdate}
-      />
-    ))}
+    {tickets?.length > 0 ? (
+      tickets.map((ticket) => (
+        <TicketCard
+          fetchTickets={fetchTickets}
+          key={ticket._id}
+          ticket={{ ...ticket, id: ticket._id }}
+          isAdmin={isAdmin}
+        />
+      ))
+    ) : (
+      <p className="text-center text-red-400">No tickets created</p>
+    )}
   </div>
 );
 

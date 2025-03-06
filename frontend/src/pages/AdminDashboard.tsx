@@ -32,18 +32,6 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleUpdate = async (id: string, status: string) => {
-    setIsLoading(true);
-    try {
-      await axiosInstance.put(`/api/tickets/${id}`, { status });
-      fetchTickets();
-    } catch (error) {
-      console.error("Failed to update ticket", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100">
       <NavigationBar />
@@ -57,7 +45,7 @@ const AdminDashboard: React.FC = () => {
           <TicketList
             tickets={tickets}
             isAdmin={true}
-            onUpdate={handleUpdate}
+            fetchTickets={fetchTickets}
           />
         )}
       </div>

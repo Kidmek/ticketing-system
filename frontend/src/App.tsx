@@ -17,7 +17,7 @@ const App: React.FC = () => {
           <Route
             path="/user"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRole="user">
                 <UserDashboard />
               </ProtectedRoute>
             }
@@ -25,7 +25,7 @@ const App: React.FC = () => {
           <Route
             path="/admin"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRole="admin">
                 <AdminDashboard />
               </ProtectedRoute>
             }
