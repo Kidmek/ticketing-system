@@ -1,65 +1,27 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import TicketList from "../../components/organisms/TicketList";
 import FormField from "../../components/molecules/FormField";
 import Button from "../../components/atoms/Button";
 import LoadingSpinner from "../../components/atoms/LoadingSpinner";
 import ErrorText from "../../components/atoms/ErrorText";
-import axiosInstance from "../../api/axiosInstance";
 import PageWrapper from "../../components/organisms/PageWrapper";
 import TicketFilters from "../../components/molecules/TicketFilters";
 import Pagination from "../../components/molecules/Pagination";
 import Select from "../../components/atoms/Select";
-
-interface Ticket {
-  _id: string;
-  title: string;
-  description: string;
-  status: "Open" | "In Progress" | "Closed";
-  priority: "Low" | "Medium" | "High";
-}
-
-interface TicketResponse {
-  tickets: Ticket[];
-  totalPages: number;
-  currentPage: number;
-  totalTickets: number;
-}
-
-interface PaginationState {
-  currentPage: number;
-  totalPages: number;
-}
-
-interface FilterState {
-  status: string;
-  priority: string;
-  search: string;
-}
-
-interface FormState {
-  title: string;
-  description: string;
-  priority: "Low" | "Medium" | "High";
-}
-
-interface ErrorState {
-  title: string;
-  description: string;
-  form: string;
-}
+import { useTickets } from "../../hooks/useTickets";
+import { FormState, ErrorState, TicketPriority } from "../../types/ticket";
 
 const UserDashboard: React.FC = () => {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [pagination, setPagination] = useState<PaginationState>({
-    currentPage: 1,
-    totalPages: 1,
-  });
-  const [filters, setFilters] = useState<FilterState>({
-    status: "",
-    priority: "",
-    search: "",
-  });
+  const {
+    tickets,
+    isLoading,
+    pagination,
+    filters,
+    setPagination,
+    setFilters,
+    createTicket,
+  } = useTickets();
+
   const [form, setForm] = useState<FormState>({
     title: "",
     description: "",
@@ -70,34 +32,6 @@ const UserDashboard: React.FC = () => {
     description: "",
     form: "",
   });
-
-  const fetchTickets = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await axiosInstance.get<TicketResponse>("/api/tickets", {
-        params: {
-          page: pagination.currentPage,
-          limit: 10,
-          status: filters.status || undefined,
-          priority: filters.priority || undefined,
-          search: filters.search || undefined,
-        },
-      });
-      setTickets(response.data.tickets);
-      setPagination({
-        currentPage: response.data.currentPage,
-        totalPages: response.data.totalPages,
-      });
-    } catch (error) {
-      console.error("Failed to fetch tickets", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [filters, pagination.currentPage]);
-
-  useEffect(() => {
-    fetchTickets();
-  }, [fetchTickets, filters, pagination.currentPage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,17 +48,9 @@ const UserDashboard: React.FC = () => {
       }));
       return;
     }
-
-    setIsLoading(true);
     try {
-      await axiosInstance.post("/api/tickets", {
-        title: form.title,
-        description: form.description,
-        priority: form.priority,
-      });
+      await createTicket({ ...form, status: "Open" });
       setForm({ title: "", description: "", priority: "Medium" });
-      setPagination((prev) => ({ ...prev, currentPage: 1 }));
-      fetchTickets();
     } catch (error: any) {
       if (error.response) {
         setErrors((prev) => ({
@@ -142,8 +68,6 @@ const UserDashboard: React.FC = () => {
           form: "An unexpected error occurred",
         }));
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -183,7 +107,7 @@ const UserDashboard: React.FC = () => {
               onChange={(e) =>
                 setForm((prev) => ({
                   ...prev,
-                  priority: e.target.value as "Low" | "Medium" | "High",
+                  priority: e.target.value as TicketPriority,
                 }))
               }
               options={[

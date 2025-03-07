@@ -1,13 +1,8 @@
+import { Ticket } from "../../types/ticket";
 import TicketCard from "../molecules/TicketCard";
 
 interface TicketListProps {
-  tickets: Array<{
-    _id: string;
-    title: string;
-    description: string;
-    status: string;
-    user?: { username: string };
-  }>;
+  tickets: Array<Ticket>;
   isAdmin?: boolean;
   fetchTickets?: () => void;
 }
