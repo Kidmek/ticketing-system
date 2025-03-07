@@ -74,15 +74,22 @@ A web-based support ticketing system built with a **Node.js** backend and a **Re
 
 1. **Signup**: Create an account as a user or admin at `/signup`.
 2. **Login**: Log in at `/login` to access your dashboard.
-3. **User Dashboard**: Create tickets and view your own tickets at `/user`.
-4. **Admin Dashboard**: Manage all tickets at `/admin`.
-5. **Logout**: Use the navigation bar’s logout button.
+3. **User Dashboard**:
+   - Create tickets with title, description, and priority
+   - View your tickets with filtering and pagination
+   - Search through your tickets
+4. **Admin Dashboard**:
+   - Manage all tickets with status updates
+   - Filter tickets by status, priority, or search text
+   - Navigate through paginated results
+5. **Logout**: Use the navigation bar's logout button.
 
 ## Future Features
 
 - **Ticket Categories**: Allow users to categorize tickets (e.g., Bug, Feature Request).
-- **Ticket Priority**: Add priority levels (Low, Medium, High) with color coding.
 - **Notifications**: Email or in-app notifications for ticket updates.
 - **User Profile**: Enable users to view and edit their profiles.
 - **Environment Variables**: Use `.env` files for configurable settings (e.g., port, JWT secret).
-
+- **Comments System**: Allow users and admins to add comments to tickets.
+- **File Attachments**: Support for file uploads in tickets.
+- **Ticket Analytics**: Dashboard with ticket statistics and trends.
