@@ -6,6 +6,13 @@ import bcrypt from "bcryptjs";
 export const signup = async (req: Request<IUser>, res: Response) => {
   const { username, password, role } = req.body;
   try {
+    const foundUser = await User.findOne({ username });
+
+    if (foundUser) {
+      res.status(401).json({ message: "Username already exists" });
+      return;
+    }
+
     const user = new User({
       username,
       password: await bcrypt.hash(password, 10),
