@@ -23,7 +23,7 @@ const TicketList: React.FC<TicketListProps> = ({
         />
       ))
     ) : (
-      <p className="text-center text-red-400">No tickets created</p>
+      <p className="text-center text-red-400">No tickets found</p>
     )}
   </div>
 );
