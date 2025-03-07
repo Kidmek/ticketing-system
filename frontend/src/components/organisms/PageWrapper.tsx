@@ -9,7 +9,9 @@ const PageWrapper: React.FC<{
     <div className="flex flex-col h-screen w-screen bg-gray-100">
       <NavigationBar />
       <Header header={header} />
-      {children}
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen mx-auto">
+        {children}
+      </div>
     </div>
   );
 };

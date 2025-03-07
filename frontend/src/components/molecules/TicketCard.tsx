@@ -10,6 +10,7 @@ interface TicketCardProps {
     description: string;
     status: string;
     user?: { username: string };
+    priority: string;
   };
   fetchTickets?: () => void;
   isAdmin: boolean;
@@ -38,13 +39,38 @@ const TicketCard: React.FC<TicketCardProps> = ({
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex justify-between items-center">
-      <div>
-        <h3 className="text-lg font-semibold">{ticket.title}</h3>
-        <p className="text-gray-600">{ticket.description}</p>
-        <span className="text-sm text-blue-500">{ticket.status}</span>
-        {isAdmin && ticket.user && (
-          <p className="text-sm text-gray-500">User: {ticket.user.username}</p>
-        )}
+      <div className="space-y-2">
+        <h3 className="text-xl font-semibold text-gray-800">{ticket.title}</h3>
+        <p className="text-gray-600 text-base">{ticket.description}</p>
+        <div className="flex flex-wrap gap-2 items-center mt-2">
+          <span
+            className={`px-2 py-1 text-sm font-medium rounded-full ${
+              ticket.status === "Open"
+                ? "bg-green-100 text-green-700"
+                : ticket.status === "In Progress"
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {ticket.status}
+          </span>
+          <span
+            className={`px-2 py-1 text-sm font-medium rounded-full ${
+              ticket.priority === "Low"
+                ? "bg-blue-100 text-blue-700"
+                : ticket.priority === "Medium"
+                ? "bg-purple-100 text-purple-700"
+                : "bg-orange-100 text-orange-700"
+            }`}
+          >
+            Priority: {ticket.priority}
+          </span>
+          {isAdmin && ticket.user && (
+            <span className="px-2 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full">
+              User: {ticket.user.username}
+            </span>
+          )}
+        </div>
       </div>
 
       {isAdmin && (

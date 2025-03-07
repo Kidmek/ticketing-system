@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import Ticket, { ITicket } from "../models/Ticket";
 
 export const createTicket = async (req: Request, res: Response) => {
-  const { title, description } = req.body;
+  const { title, description, priority } = req.body;
   const userId = (req as any).user.id;
   try {
-    const ticket = new Ticket({ title, description, user: userId });
+    const ticket = new Ticket({ title, description, priority, user: userId });
     await ticket.save();
     res.status(201).json(ticket);
   } catch (error) {
@@ -16,7 +16,7 @@ export const createTicket = async (req: Request, res: Response) => {
 export const getTickets = async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
   const role = (req as any).user.role;
-  const { page = 1, limit = 10, status, search } = req.query;
+  const { page = 1, limit = 10, status, priority, search } = req.query;
   const pageNumber = parseInt(page as string);
   const limitNumber = parseInt(limit as string);
   const skip = (pageNumber - 1) * limitNumber;
@@ -30,6 +30,11 @@ export const getTickets = async (req: Request, res: Response) => {
       ["Open", "In Progress", "Closed"].includes(status as string)
     ) {
       query.status = status;
+    }
+
+    // Add priority filter if provided
+    if (priority && ["Low", "Medium", "High"].includes(priority as string)) {
+      query.priority = priority;
     }
 
     // Add search filter if provided
@@ -68,11 +73,11 @@ export const getTickets = async (req: Request, res: Response) => {
 
 export const updateTicket = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, priority } = req.body;
   try {
     const ticket = await Ticket.findByIdAndUpdate(
       id,
-      { status },
+      { status, priority },
       { new: true }
     );
     if (!ticket) {

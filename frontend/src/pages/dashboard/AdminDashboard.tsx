@@ -11,6 +11,7 @@ interface Ticket {
   title: string;
   description: string;
   status: "Open" | "In Progress" | "Closed";
+  priority: "Low" | "Medium" | "High";
   user: { username: string };
 }
 
@@ -21,46 +22,70 @@ interface TicketResponse {
   totalTickets: number;
 }
 
+interface PaginationState {
+  currentPage: number;
+  totalPages: number;
+}
+
+interface FilterState {
+  status: string;
+  priority: string;
+  search: string;
+}
+
 const AdminDashboard: React.FC = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>({
+    currentPage: 1,
+    totalPages: 1,
+  });
+  const [filters, setFilters] = useState<FilterState>({
+    status: "",
+    priority: "",
+    search: "",
+  });
 
   const fetchTickets = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await axiosInstance.get<TicketResponse>("/api/tickets", {
         params: {
-          page: currentPage,
+          page: pagination.currentPage,
           limit: 10,
-          status: status || undefined,
-          search: search || undefined,
+          status: filters.status || undefined,
+          priority: filters.priority || undefined,
+          search: filters.search || undefined,
         },
       });
       setTickets(response.data.tickets);
-      setTotalPages(response.data.totalPages);
+      setPagination({
+        currentPage: response.data.currentPage,
+        totalPages: response.data.totalPages,
+      });
     } catch (error) {
       console.error("Failed to fetch tickets", error);
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, status, search]);
+  }, [filters, pagination.currentPage]);
 
   useEffect(() => {
     fetchTickets();
-  }, [status, search, currentPage, fetchTickets]);
+  }, [fetchTickets, filters, pagination.currentPage]);
 
   return (
     <PageWrapper header="Admin Dashboard">
-      <div className="px-6 max-w-4xl flex-1 overflow-y-auto w-screen mx-auto">
+      <div className="px-6 max-w-4xl flex-1 overflow-y-auto">
         <TicketFilters
-          status={status}
-          setStatus={setStatus}
-          search={search}
-          setSearch={setSearch}
+          status={filters.status}
+          setStatus={(status) => setFilters((prev) => ({ ...prev, status }))}
+          priority={filters.priority}
+          setPriority={(priority) =>
+            setFilters((prev) => ({ ...prev, priority }))
+          }
+          search={filters.search}
+          setSearch={(search) => setFilters((prev) => ({ ...prev, search }))}
         />
         {isLoading ? (
           <LoadingSpinner />
@@ -72,9 +97,11 @@ const AdminDashboard: React.FC = () => {
               fetchTickets={fetchTickets}
             />
             <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={(page) =>
+                setPagination((prev) => ({ ...prev, currentPage: page }))
+              }
             />
           </>
         )}
