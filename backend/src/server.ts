@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/ticketing";
+const port = process.env.PORT || 9000;
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -18,6 +19,6 @@ mongoose.connect(mongoUri, {
 app.use("/api/auth", authRoutes);
 app.use("/api/tickets", ticketRoutes);
 
-app.listen(9000, () => {
-  console.log("Server running on port 9000");
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
